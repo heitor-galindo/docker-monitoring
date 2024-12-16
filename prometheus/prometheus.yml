@@ -29,7 +29,21 @@ scrape_configs:
     static_configs:
       - targets:
           - 10.1.1.106:9182
-  - job_name: 'nvidia_gpu_exporter'
+  - job_name: "nvidia_gpu_exporter"
     static_configs:
-      - targets: 
+      - targets:
           - 10.1.1.106:9835
+  - job_name: "speedtest"
+    metrics_path: /probe
+    params:
+      script: [speedtest]
+    static_configs:
+      - targets:
+          - speedtest:9469
+    scrape_interval: 1m
+    scrape_timeout: 30s
+  - job_name: "script_exporter"
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - speedtest:9469
