@@ -29,9 +29,11 @@ services:
       - grafana-volume:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_SIGNOUT_MENU=true
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
     deploy:
       resources:
         reservations:
@@ -45,13 +47,17 @@ services:
     image: gcr.io/cadvisor/cadvisor:latest
     container_name: cadvisor
     restart: unless-stopped
+    privileged: true
     ports:
       - 8085:8080
     volumes:
       - /:/rootfs:ro
-      - /var/run:/var/run:rw
+      - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /run/user/1000/docker.sock:/var/run/docker.sock:rw
+      - /home/heitor/.local/share/docker/:/var/lib/docker:ro
     deploy:
       resources:
         reservations:
