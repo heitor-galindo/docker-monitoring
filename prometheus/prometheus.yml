@@ -14,33 +14,49 @@ scrape_configs:
     static_configs:
       - targets:
           - localhost:9090
+  
+  # Job para coletar metricas dos containeres executados no homelab
   - job_name: cadvisor
     static_configs:
       - targets:
           - cadvisor:8080
+  
+  # Job para coletar metricas do node-exporter (homelab ubuntu)
   - job_name: node
     static_configs:
       - targets:
           - node-exporter:9100
+  
+  # Job para coletar metricas do windows (dell g15)
   - job_name: "win-exporter"
     static_configs:
       - targets:
           - 10.1.1.106:9182
+  
+  # Job para coletar metricas de gpu (dell g15)
   - job_name: "nvidia_gpu_exporter"
+    scrape_interval: 30s
     static_configs:
       - targets:
           - 10.1.1.106:9835
-  - job_name: "speedtest"
+
+  # Job para executar o script Speedtest a cada 60 minutos
+  - job_name: 'speedtest'
     metrics_path: /probe
     params:
       script: [speedtest]
     static_configs:
       - targets:
           - speedtest:9469
-    scrape_interval: 10m
+    scrape_interval: 60m
     scrape_timeout: 90s
-  - job_name: "script_exporter"
+
+  # Job para coletar métricas gerais do Script Exporter
+  - job_name: 'script_exporter_general'
     metrics_path: /metrics
     static_configs:
       - targets:
           - speedtest:9469
+    scrape_interval: 5m
+    scrape_timeout: 10s
+
