@@ -9,15 +9,12 @@ alerting:
 scrape_configs:
   - job_name: prometheus
     honor_timestamps: true
-    scrape_interval: 15s
-    scrape_timeout: 10s
     metrics_path: /metrics
     scheme: http
     static_configs:
       - targets:
           - localhost:9090
   - job_name: cadvisor
-    scrape_interval: 5s
     static_configs:
       - targets:
           - cadvisor:8080
@@ -40,8 +37,8 @@ scrape_configs:
     static_configs:
       - targets:
           - speedtest:9469
-    scrape_interval: 1m
-    scrape_timeout: 30s
+    scrape_interval: 10m
+    scrape_timeout: 90s
   - job_name: "script_exporter"
     metrics_path: /metrics
     static_configs:
