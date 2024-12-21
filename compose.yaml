@@ -1,3 +1,17 @@
+x-deploy-config: &default-deploy
+  resources:
+    reservations:
+      cpus: "1"
+      memory: 1gb
+    limits:
+      cpus: "2"
+      memory: 2gb
+
+x-networks-config: &default-network
+  networks:
+    - monitoringnetwork
+
+name: docker-monitoring
 services:
   prometheus:
     image: prom/prometheus:latest
@@ -10,14 +24,8 @@ services:
       - 9090:9090
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
-    deploy:
-      resources:
-        reservations:
-          cpus: "1"
-          memory: 1gb
-        limits:
-          cpus: "2"
-          memory: 2gb
+    deploy: *default-deploy
+    <<: *default-network
 
   grafana:
     image: grafana/grafana:latest
@@ -34,14 +42,8 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_SIGNOUT_MENU=true
       - GF_AUTH_DISABLE_LOGIN_FORM=true
-    deploy:
-      resources:
-        reservations:
-          cpus: "1"
-          memory: 1gb
-        limits:
-          cpus: "2"
-          memory: 2gb
+    deploy: *default-deploy
+    <<: *default-network
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
@@ -60,14 +62,8 @@ services:
       - /home/heitor/.local/share/docker/:/var/lib/docker:ro
       - /etc/machine-id:/etc/machine-id:ro
       - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
-    deploy:
-      resources:
-        reservations:
-          cpus: "1"
-          memory: 1gb
-        limits:
-          cpus: "2"
-          memory: 2gb
+    deploy: *default-deploy
+    <<: *default-network
 
   node-exporter:
     image: prom/node-exporter:latest
@@ -90,31 +86,23 @@ services:
       - '--collector.processes'
     ports:
       - 9100:9100
-    deploy:
-      resources:
-        reservations:
-          cpus: "1"
-          memory: 1gb
-        limits:
-          cpus: "2"
-          memory: 2gb
+    deploy: *default-deploy
+    <<: *default-network
   speedtest:
     image: billimek/prometheus-speedtest-exporter:latest
     container_name: speedtest
     restart: "on-failure"
     ports:
       - 9469:9469
-    # environment:
-    #   - server_ids=3855,1782,2225 # 3855 => DTAC Bangkok; 1782 => Comcast Seattle; 2225 => Telstra Melbourne
-    deploy:
-      resources:
-        reservations:
-          cpus: "1"
-          memory: 1gb
-        limits:
-          cpus: "2"
-          memory: 2gb
+    deploy: *default-deploy
+    <<: *default-network
 
 volumes:
   grafana-volume:
   prometheus-volume:
+
+networks:
+  monitoringnetwork:
+    driver: bridge
+    name: homelabnetwork
+    external: true

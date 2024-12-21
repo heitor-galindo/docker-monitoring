@@ -1,9 +1,7 @@
 # docker-monitoring
+Where I setup my monitoring tools for my [homelab](https://github.com/heitor-galindo/homelab):
 
-## ferramentas
-
-Repo com ferramentas para monitorar meu homelab.  
-Stack usando docker compose e as seguintes ferramentas:
+## tools
 
 Grafana  
 Prometheus  
